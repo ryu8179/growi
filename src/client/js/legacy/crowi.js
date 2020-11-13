@@ -154,35 +154,16 @@ Crowi.highlightSelectedSection = function(hash) {
   }
 };
 
-$(() => {
-  const pageId = $('#content-main').data('page-id');
-  const isSeen = $('#content-main').data('page-is-seen');
-
-  $('[data-toggle="popover"]').popover();
-  $('[data-toggle="tooltip"]').tooltip();
-  $('[data-tooltip-stay]').tooltip('show');
-
-  if (pageId) {
-
-    if (!isSeen) {
-      $.post('/_api/pages.seen', { page_id: pageId }, (res) => {
-        // ignore unless response has error
-        if (res.ok && res.seenUser) {
-          $('#content-main').data('page-is-seen', 1);
-        }
-      });
-    }
-  } // end if pageId
-});
-
 window.addEventListener('load', (e) => {
   const { appContainer } = window;
+  const pageContainer = appContainer.getContainer('PageContainer');
+  const { isAbleToOpenPageEditor } = pageContainer;
 
   // hash on page
   if (window.location.hash) {
     const navigationContainer = appContainer.getContainer('NavigationContainer');
 
-    if (window.location.hash === '#edit') {
+    if (window.location.hash === '#edit' && isAbleToOpenPageEditor) {
       navigationContainer.setEditorMode('edit');
 
       // focus
