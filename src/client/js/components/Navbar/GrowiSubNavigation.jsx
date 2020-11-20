@@ -14,19 +14,15 @@ import PageContainer from '../../services/PageContainer';
 
 import RevisionPathControls from '../Page/RevisionPathControls';
 import TagLabels from '../Page/TagLabels';
-import LikeButton from '../LikeButton';
-import BookmarkButton from '../BookmarkButton';
-import ThreeStrandedButton from './ThreeStrandedButton';
+import SubnavButtons from './SubNavButtons';
+import PageEditorModeManager from './PageEditorModeManager';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
-import PageManagement from '../Page/PageManagement';
-
-
 const PagePathNav = ({
   // eslint-disable-next-line react/prop-types
-  pageId, pagePath, isPageForbidden, isEditorMode,
+  pageId, pagePath, isEditorMode,
 }) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
@@ -56,7 +52,6 @@ const PagePathNav = ({
           <RevisionPathControls
             pageId={pageId}
             pagePath={pagePath}
-            isPageForbidden={isPageForbidden}
           />
         </div>
       </span>
@@ -64,35 +59,13 @@ const PagePathNav = ({
   );
 };
 
-
-/* eslint-enable react/prop-types */
-
-/* eslint-disable react/prop-types */
-const PageReactionButtons = ({ appContainer, pageContainer }) => {
-
-  return (
-    <>
-      {pageContainer.isAbleToShowLikeButton && (
-        <span className="mr-2">
-          <LikeButton />
-        </span>
-      )}
-      <span>
-        <BookmarkButton crowi={appContainer} />
-      </span>
-    </>
-  );
-};
-/* eslint-enable react/prop-types */
-
 const GrowiSubNavigation = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
-  const { isDrawerMode, editorMode } = navigationContainer.state;
+  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isPageExist, isForbidden: isPageForbidden,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
   const { isGuestUser } = appContainer;
@@ -100,7 +73,7 @@ const GrowiSubNavigation = (props) => {
   // Tags cannot be edited while the new page and editorMode is view
   const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
-  function onThreeStrandedButtonClicked(viewType) {
+  function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
   }
 
@@ -121,24 +94,24 @@ const GrowiSubNavigation = (props) => {
               <TagLabels editorMode={editorMode} />
             </div>
           ) }
-          <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} isEditorMode={isEditorMode} />
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} />
         </div>
       </div>
 
       {/* Right side */}
       <div className="d-flex">
 
-        <div className={`d-flex ${isEditorMode ? 'align-items-center' : 'flex-column align-items-end'}`}>
+        <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
+            <SubnavButtons isCompactMode={isCompactMode} />
           </div>
-          <div className={`${isEditorMode ? 'ml-2' : 'mt-2'}`}>
-            {pageContainer.isAbleToShowThreeStrandedButton && (
-              <ThreeStrandedButton
-                onThreeStrandedButtonClicked={onThreeStrandedButtonClicked}
+          <div className="mt-2">
+            {pageContainer.isAbleToShowPageEditorModeManager && (
+              <PageEditorModeManager
+                onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
+                isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
             )}
           </div>

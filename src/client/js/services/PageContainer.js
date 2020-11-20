@@ -63,7 +63,6 @@ export default class PageContainer extends Container {
 
       isUserPage: JSON.parse(mainContent.getAttribute('data-page-user')) != null,
       isTrashPage: isTrashPage(path),
-      isForbidden: JSON.parse(mainContent.getAttribute('data-page-is-forbidden')),
       isDeleted: JSON.parse(mainContent.getAttribute('data-page-is-deleted')),
       isDeletable: JSON.parse(mainContent.getAttribute('data-page-is-deletable')),
       isNotCreatable: JSON.parse(mainContent.getAttribute('data-page-is-not-creatable')),
@@ -149,10 +148,10 @@ export default class PageContainer extends Container {
 
 
   get isAbleToOpenPageEditor() {
-    const { isPageForbidden, isNotCreatable, isTrashPage } = this.state;
+    const { isNotCreatable, isTrashPage } = this.state;
     const { isGuestUser } = this.appContainer;
 
-    return (!isPageForbidden && !isNotCreatable && !isTrashPage && !isGuestUser);
+    return (!isNotCreatable && !isTrashPage && !isGuestUser);
   }
 
   /**
@@ -170,10 +169,10 @@ export default class PageContainer extends Container {
    * whether to display tag labels
    */
   get isAbleToShowTagLabel() {
-    const { isPageForbidden, isUserPage } = this.state;
+    const { isUserPage } = this.state;
     const { isSharedUser } = this.appContainer;
 
-    return (!isPageForbidden && !isUserPage && !isSharedUser);
+    return (!isUserPage && !isSharedUser);
   }
 
   /**
@@ -181,31 +180,31 @@ export default class PageContainer extends Container {
    * ex.) duplicate, rename
    */
   get isAbleToShowPageManagement() {
-    const { isPageForbidden, isPageExist, isPageInTrash } = this.state;
+    const { isPageExist, isTrashPage } = this.state;
     const { isSharedUser } = this.appContainer;
 
-    return (!isPageForbidden && isPageExist && !isPageInTrash && !isSharedUser);
+    return (isPageExist && !isTrashPage && !isSharedUser);
   }
 
   /**
-   * whether to threeStrandedButton
+   * whether to display pageEditorModeManager
    * ex.) view, edit, hackmd
    */
-  get isAbleToShowThreeStrandedButton() {
-    const { isPageForbidden, isNotCreatable, isPageInTrash } = this.state;
-    const { isSharedUser, isGuestUser } = this.appContainer;
+  get isAbleToShowPageEditorModeManager() {
+    const { isNotCreatable, isTrashPage } = this.state;
+    const { isSharedUser } = this.appContainer;
 
-    return (!isPageForbidden && !isNotCreatable && !isPageInTrash && !isSharedUser && !isGuestUser);
+    return (!isNotCreatable && !isTrashPage && !isSharedUser);
   }
 
   /**
-   * whether to threeStrandedButton
-   * ex.) view, edit, hackmd
+   * whether to display pageAuthors
+   * ex.) creator, lastUpdateUser
    */
   get isAbleToShowPageAuthors() {
-    const { isPageForbidden, isPageExist, isUserPage } = this.state;
+    const { isPageExist, isUserPage } = this.state;
 
-    return (!isPageForbidden && isPageExist && !isUserPage);
+    return (isPageExist && !isUserPage);
   }
 
   /**
@@ -217,6 +216,29 @@ export default class PageContainer extends Container {
     const { isSharedUser } = this.appContainer;
 
     return (!isUserPage && !isSharedUser);
+  }
+
+  /**
+   * whether to Empty Trash Page
+   * not displayed when guest user and not on trash page
+   */
+  get isAbleToShowEmptyTrashButton() {
+    const { currentUser } = this.appContainer;
+    const { path, hasChildren } = this.state;
+
+    return (currentUser != null && currentUser.admin && path === '/trash' && hasChildren);
+  }
+
+  /**
+   * whether to display trash management buttons
+   * ex.) undo, delete completly
+   * not displayed when guest user
+   */
+  get isAbleToShowTrashPageManagementButtons() {
+    const { currentUser } = this.appContainer;
+    const { isDeleted } = this.state;
+
+    return (isDeleted && currentUser != null);
   }
 
   /**
