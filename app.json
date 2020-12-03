@@ -30,14 +30,5 @@
       "value": "growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion",
       "required": false
     }
-  },
-  "addons": [
-    "mongolab",
-    {
-      "plan": "searchbox:starter",
-      "options": {
-        "es_version": "6"
-      }
-    }
-  ]
+  }
 }
